@@ -186,50 +186,7 @@ bool events::out::generictext(std::string packet) {
          }
 
 else if (find_command(chat, "spam")) {
-        if (enabled_color == true) {
-            swxs = "1";
-        }
-        else {
-            swxs = "0";
-        }
-        std::string spamdial;
-        spamdial =
-            "add_label_with_icon|big|Auto Spam Page|left|242|"
-            "\nadd_textbox|`9Leave the text uncolored, it will automaticcly color itself|left|2480|"
-            "\nadd_textbox|`9if colored Text is enabled|left|2480|"
-            "\nadd_checkbox|c_text|`2Enable `ccolored text|" +
-            swxs +
-            "|"
-            //"\nadd_text_input |spam_msg|`9Spam text: | " + gt:: + " |30"
-            "\nadd_text_input|spam_msg|`9Spam text: ||50|"
-            //add_text_input|" + name + "|" + text + "|" + cont + "|" + to_string(size) + "|
-            "\nadd_text_input|delay_msg|`9Delay`2(ms): |" + to_string(delay) + "|4|"
-            "\nadd_textbox|`91000`2ms`9 = 1 Second|left|2480|"
-            "\nend_dialog|spam_text|Cancel|Set|"; //"\nend_dialog|colored_text|Cancel|Set|";
-        variantlist_t liste{ "OnDialogRequest" };
-        liste[1] = spamdial;
-        g_server->send(true, liste);
-        return true;
-        }
-else if (find_command(chat, "/")) {
-        son = !son;
-                std::thread([&]() {
-                    const string colored_text_array[10] = { "`2", "`3", "`4", "`#", "`9", "`8", "`c", "`6", "`^" , "`b" };
-                    while (son) {
-                        int baba = (rand() % 9 ) + 1;
-                            string send_ = colored_text_array[baba];
-                            if (enabled_color == true) {
-                                g_server->send(false, "action|input\n|text|" + send_ + aspam);
-                            }
-                            else {
-                                g_server->send(false, "action|input\n|text|" + aspam);
-                            }
-                            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-                        
-                    }
-                    }).detach();
-            return true;
-        }
+
         
         else if (find_command(chat, "wrenchset ")) {
             mode = chat.substr(10);
@@ -438,57 +395,7 @@ else if (find_command(chat, "/")) {
         return false;
     }
 
-	if (packet.find("spam_text") != -1) {
-        try {
-            if (packet.find("c_text|") != -1) {
-                string aaa = packet.substr(packet.find("ext|") + 4, packet.size());
-                string number = aaa.c_str();
-                while (!number.empty() && isspace(number[number.size() - 1]))
-                    number.erase(number.end() - (76 - 0x4B));
-                string enabled_color = stoi(number);
-            }
-            if (packet.find("auto_enable|") != -1) {
-                string aaa = packet.substr(packet.find("ble|") + 4, packet.size());
-                string number = aaa.c_str();
-                while (!number.empty() && isspace(number[number.size() - 1]))
-                    number.erase(number.end() - (76 - 0x4B));
-                string son = stoi(number);
-            }
-            if (packet.find("spam_msg|") != -1) {
-                string msg = packet.substr(packet.find("spam_msg|") + 9, packet.length() - packet.find("spam_msg") - 1);
-                string aspam = msg;
-            }
-            if (packet.find("delay_msg|") != -1) {
-                string msg = packet.substr(packet.find("delay_msg|") + 10, packet.length() - packet.find("delay_msg") - 1);
-                string delay = stoi(msg);
-            }
-
-        }
-        catch (exception a) {
-            cout << "error?";
-            cout << a.what();
-        }
-        return true;
-    }
-    /*if (packet.find("spam_page") != -1) {
-        if (packet.find("coloredtext") != -1) {
-            try {
-                string aaa = packet.substr(packet.find("ext|") + 4, packet.size());
-                string number = aaa.c_str();
-                while (!number.empty() && isspace(number[number.size() - 1]))
-                    number.erase(number.end() - (76 - 0x4B));
-                string enabled_color= stoi(number);
-            }
-            catch (exception a)
-            {
-                gt::send_log("`4Critical Error: `2override detected");
-
-            }
-        }
-        string delay = stoi(packet.substr(packet.find("message_8|") + 10, packet.length() - packet.find("message_8|") - 1));
-        string aspam = stoi(packet.substr(packet.find("message_9|") + 10, packet.length() - packet.find("message_9|") - 1));
-        return true;
-    }*/
+	
 
     if (packet.find("game_version|") != -1) {
         rtvar var = rtvar::parse(packet);
