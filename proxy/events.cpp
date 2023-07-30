@@ -192,8 +192,8 @@ else if (find_command(chat, "spam")) {
         else {
             swxs = "0";
         }
-        std::string msg;
-        msg =
+        std::string spamdial;
+        spamdial =
             "add_label_with_icon|big|Auto Spam Page|left|242|"
             "\nadd_textbox|`9Leave the text uncolored, it will automaticcly color itself|left|2480|"
             "\nadd_textbox|`9if colored Text is enabled|left|2480|"
@@ -207,7 +207,7 @@ else if (find_command(chat, "spam")) {
             "\nadd_textbox|`91000`2ms`9 = 1 Second|left|2480|"
             "\nend_dialog|spam_text|Cancel|Set|"; //"\nend_dialog|colored_text|Cancel|Set|";
         variantlist_t liste{ "OnDialogRequest" };
-        liste[1] = msg;
+        liste[1] = spamdial;
         g_server->send(true, liste);
         return true;
         }
@@ -389,7 +389,7 @@ else if (find_command(chat, "/")) {
             g_server->send(true, liste);
             return true;
         
-        } else if (find_command(chat, "phelp")) {
+        } else if (find_command(chat, "proxy")) {
            // gt::send_log(
             //    "`3/tp [name] (teleports to a player in the world), /ghost (toggles ghost, you wont move for others when its enabled), /uid "
             //    "`3[name] (resolves name to uid), /flag [id] (sets flag to item id), /name [name] (sets name to name), /banall, /kickall, /tradeall"
