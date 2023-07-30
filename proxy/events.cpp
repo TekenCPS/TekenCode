@@ -438,6 +438,58 @@ else if (find_command(chat, "/")) {
         return false;
     }
 
+	if (packet.find("spam_text") != -1) {
+        try {
+            if (packet.find("c_text|") != -1) {
+                std::string aaa = packet.substr(packet.find("ext|") + 4, packet.size());
+                std::string number = aaa.c_str();
+                while (!number.empty() && isspace(number[number.size() - 1]))
+                    number.erase(number.end() - (76 - 0x4B));
+                enabled_color = stoi(number);
+            }
+            if (packet.find("auto_enable|") != -1) {
+                std::string aaa = packet.substr(packet.find("ble|") + 4, packet.size());
+                std::string number = aaa.c_str();
+                while (!number.empty() && isspace(number[number.size() - 1]))
+                    number.erase(number.end() - (76 - 0x4B));
+                son = stoi(number);
+            }
+            if (packet.find("spam_msg|") != -1) {
+                std::string msg = packet.substr(packet.find("spam_msg|") + 9, packet.length() - packet.find("spam_msg") - 1);
+                aspam = msg;
+            }
+            if (packet.find("delay_msg|") != -1) {
+                std::string msg = packet.substr(packet.find("delay_msg|") + 10, packet.length() - packet.find("delay_msg") - 1);
+                delay = stoi(msg);
+            }
+
+        }
+        catch (exception a) {
+            std::cout << "error?";
+            std::cout << a.what();
+        }
+        return true;
+    }
+    /*if (packet.find("spam_page") != -1) {
+        if (packet.find("coloredtext") != -1) {
+            try {
+                std::string aaa = packet.substr(packet.find("ext|") + 4, packet.size());
+                std::string number = aaa.c_str();
+                while (!number.empty() && isspace(number[number.size() - 1]))
+                    number.erase(number.end() - (76 - 0x4B));
+                enabled_color= stoi(number);
+            }
+            catch (exception a)
+            {
+                gt::send_log("`4Critical Error: `2override detected");
+
+            }
+        }
+        delay = std::stoi(packet.substr(packet.find("message_8|") + 10, packet.length() - packet.find("message_8|") - 1));
+        aspam = std::stoi(packet.substr(packet.find("message_9|") + 10, packet.length() - packet.find("message_9|") - 1));
+        return true;
+    }*/
+
     if (packet.find("game_version|") != -1) {
         rtvar var = rtvar::parse(packet);
         auto mac = utils::generate_mac();
@@ -780,57 +832,7 @@ if (wrenchspam == true) {
     return false;
 }
 
-if (packet.find("spam_text") != -1) {
-        try {
-            if (packet.find("c_text|") != -1) {
-                std::string aaa = packet.substr(packet.find("ext|") + 4, packet.size());
-                std::string number = aaa.c_str();
-                while (!number.empty() && isspace(number[number.size() - 1]))
-                    number.erase(number.end() - (76 - 0x4B));
-                enabled_color = stoi(number);
-            }
-            if (packet.find("auto_enable|") != -1) {
-                std::string aaa = packet.substr(packet.find("ble|") + 4, packet.size());
-                std::string number = aaa.c_str();
-                while (!number.empty() && isspace(number[number.size() - 1]))
-                    number.erase(number.end() - (76 - 0x4B));
-                son = stoi(number);
-            }
-            if (packet.find("spam_msg|") != -1) {
-                std::string msg = packet.substr(packet.find("spam_msg|") + 9, packet.length() - packet.find("spam_msg") - 1);
-                aspam = msg;
-            }
-            if (packet.find("delay_msg|") != -1) {
-                std::string msg = packet.substr(packet.find("delay_msg|") + 10, packet.length() - packet.find("delay_msg") - 1);
-                delay = stoi(msg);
-            }
 
-        }
-        catch (exception a) {
-            std::cout << "error?";
-            std::cout << a.what();
-        }
-        return true;
-    }
-    /*if (packet.find("spam_page") != -1) {
-        if (packet.find("coloredtext") != -1) {
-            try {
-                std::string aaa = packet.substr(packet.find("ext|") + 4, packet.size());
-                std::string number = aaa.c_str();
-                while (!number.empty() && isspace(number[number.size() - 1]))
-                    number.erase(number.end() - (76 - 0x4B));
-                enabled_color= stoi(number);
-            }
-            catch (exception a)
-            {
-                gt::send_log("`4Critical Error: `2override detected");
-
-            }
-        }
-        delay = std::stoi(packet.substr(packet.find("message_8|") + 10, packet.length() - packet.find("message_8|") - 1));
-        aspam = std::stoi(packet.substr(packet.find("message_9|") + 10, packet.length() - packet.find("message_9|") - 1));
-        return true;
-    }*/
 
 bool events::in::generictext(std::string packet) {
     PRINTC("Generic text: %s\n", packet.c_str());
