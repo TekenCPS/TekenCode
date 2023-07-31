@@ -331,6 +331,40 @@ else if (find_command(chat, "spam")) {
             return true;
 
 
+else if (find_command(chat, "pos1")) {
+        auto& bruh = g_server->m_world.local;
+        pos1.m_x = bruh.pos.m_x;
+        pos1.m_y = bruh.pos.m_y;
+        host::pos1x = to_string(pos1.m_x);
+        host::pos1y = to_string(pos1.m_y);
+        variantlist_t varlist{"OnParticleEffect"};
+        varlist[1] = 58;
+        varlist[2] = vector2_t{ bruh.pos.m_x,  bruh.pos.m_y};
+        varlist[3] = 0;
+        varlist[4] = 0;
+        g_server->send(true, varlist);
+        
+        gt::send_log("`91st position: `#" + host::pos1x + ", " + host::pos1y);
+        return true;
+        }
+else if (find_command(chat, "pos2")) {
+        auto& bruh2 = g_server->m_world.local;
+        pos2.m_x = bruh2.pos.m_x;
+        pos2.m_y = bruh2.pos.m_y;
+        host::pos2x = to_string(pos2.m_x);
+        host::pos2y = to_string(pos2.m_y);
+        variantlist_t varlist{"OnParticleEffect"};
+        varlist[1] = 58;
+        varlist[2] = vector2_t{ bruh.pos.m_x,  bruh.pos.m_y};
+        varlist[3] = 0;
+        varlist[4] = 0;
+        g_server->send(true, varlist);
+        
+        gt::send_log("`92st position: `#" + host::pos2x + ", " + host::pos2y);
+        return true;
+        }
+
+
 }else if (find_command(chat, "pinfo")) {
                    std::string paket;
             paket =
