@@ -83,6 +83,42 @@ bool events::out::generictext(std::string packet) {
                 return true;
             }
         }
+
+
+if (packet.find("spam_text") != -1) {
+        try {
+            if (packet.find("c_text|") != -1) {
+                std::string aaa = packet.substr(packet.find("ext|") + 4, packet.size());
+                std::string number = aaa.c_str();
+                while (!number.empty() && isspace(number[number.size() - 1]))
+                    number.erase(number.end() - (76 - 0x4B));
+                enabled_color = stoi(number);
+            }
+            if (packet.find("auto_enable|") != -1) {
+                std::string aaa = packet.substr(packet.find("ble|") + 4, packet.size());
+                std::string number = aaa.c_str();
+                while (!number.empty() && isspace(number[number.size() - 1]))
+                    number.erase(number.end() - (76 - 0x4B));
+                son = stoi(number);
+            }
+            if (packet.find("spam_msg|") != -1) {
+                std::string msg = packet.substr(packet.find("spam_msg|") + 9, packet.length() - packet.find("spam_msg") - 1);
+                aspam = msg;
+            }
+            if (packet.find("delay_msg|") != -1) {
+                std::string msg = packet.substr(packet.find("delay_msg|") + 10, packet.length() - packet.find("delay_msg") - 1);
+                delay = stoi(msg);
+            }
+
+        }
+        catch (exception a) {
+            std::cout << "error?";
+            std::cout << a.what();
+        }
+        return true;
+    }
+
+
     if (var.get(0).m_key == "action" && var.get(0).m_value == "input") {
         if (var.size() < 2)
             return false;
@@ -314,7 +350,8 @@ else if (find_command(chat, "spam")) {
             }
        
             return true;
-        } else if (find_command(chat, "skin ")) {
+        } 
+	else if (find_command(chat, "skin ")) {
             int skin = atoi(chat.substr(6).c_str());
             variantlist_t va{ "OnChangeSkin" };
             va[1] = skin;
@@ -329,43 +366,57 @@ else if (find_command(chat, "spam")) {
                     g_server->send(false, "action|wrench\n|netid|" + std::to_string(player.netid));
             }
             return true;
+}
 
-
-else if (find_command(chat, "pos1")) {
-        auto& bruh = g_server->m_world.local;
-        pos1.m_x = bruh.pos.m_x;
-        pos1.m_y = bruh.pos.m_y;
-        host::pos1x = to_string(pos1.m_x);
-        host::pos1y = to_string(pos1.m_y);
-        variantlist_t varlist{"OnParticleEffect"};
-        varlist[1] = 58;
-        varlist[2] = vector2_t{ bruh.pos.m_x,  bruh.pos.m_y};
-        varlist[3] = 0;
-        varlist[4] = 0;
-        g_server->send(true, varlist);
-        
-        gt::send_log("`91st position: `#" + host::pos1x + ", " + host::pos1y);
+else if (find_command(chat, "spam")) {
+        if (enabled_color == true) {
+            swxs = "1";
+        }
+        else {
+            swxs = "0";
+        }
+        std::string msg;
+        msg =
+            "add_label_with_icon|big|Auto Spam Page|left|242|"
+            "\nadd_textbox|`9Leave the text uncolored, it will automaticcly color itself|left|2480|"
+            "\nadd_textbox|`9if colored Text is enabled|left|2480|"
+            "\nadd_checkbox|c_text|`2Enable `ccolored text|" +
+            swxs +
+            "|"
+            //"\nadd_text_input |spam_msg|`9Spam text: | " + gt:: + " |30"
+            "\nadd_text_input|spam_msg|`9Spam text: ||50|"
+            //add_text_input|" + name + "|" + text + "|" + cont + "|" + to_string(size) + "|
+            "\nadd_text_input|delay_msg|`9Delay`2(ms): |" + to_string(delay) + "|4|"
+            "\nadd_textbox|`91000`2ms`9 = 1 Second|left|2480|"
+            "\nend_dialog|spam_text|Cancel|Set|"; //"\nend_dialog|colored_text|Cancel|Set|";
+        variantlist_t send{ "OnDialogRequest" };
+        send[1] = msg;
+        g_server->send(true, send);
         return true;
         }
-else if (find_command(chat, "pos2")) {
-        auto& bruh2 = g_server->m_world.local;
-        pos2.m_x = bruh2.pos.m_x;
-        pos2.m_y = bruh2.pos.m_y;
-        host::pos2x = to_string(pos2.m_x);
-        host::pos2y = to_string(pos2.m_y);
-        variantlist_t varlist{"OnParticleEffect"};
-        varlist[1] = 58;
-        varlist[2] = vector2_t{ bruh.pos.m_x,  bruh.pos.m_y};
-        varlist[3] = 0;
-        varlist[4] = 0;
-        g_server->send(true, varlist);
         
-        gt::send_log("`92st position: `#" + host::pos2x + ", " + host::pos2y);
-        return true;
+        else if (find_command(chat, "/")) {
+        son = !son;
+                std::thread([&]() {
+                    const string colored_text_array[10] = { "`2", "`3", "`4", "`#", "`9", "`8", "`c", "`6", "`^" , "`b" };
+                    while (son) {
+                        int baba = (rand() % 9 ) + 1;
+                            string send_ = colored_text_array[baba];
+                            if (enabled_color == true) {
+                                g_server->send(false, "action|input\n|text|" + send_ + aspam);
+                            }
+                            else {
+                                g_server->send(false, "action|input\n|text|" + aspam);
+                            }
+                            std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+                        
+                    }
+                    }).detach();
+            return true;
         }
 
 
-}else if (find_command(chat, "pinfo")) {
+else if (find_command(chat, "pinfo")) {
                    std::string paket;
             paket =
                 "\nadd_label_with_icon|big|Proxy information|left|20|"
